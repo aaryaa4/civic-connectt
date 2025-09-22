@@ -5,3 +5,4 @@ pydantic[email]
 python-jose[cryptography]
 passlib[bcrypt]
 jinja2
+psycopg2-binary
