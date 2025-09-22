@@ -17,19 +17,19 @@ import models
 from database import SessionLocal, engine, get_db
 
 # --- INITIAL SETUP ---
-# This line will automatically create your database tables in Postgres
+# Automatically creates your database tables in Postgres on startup
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Get the directory of the current file to build robust, absolute paths
+# Build robust, absolute paths for static files and templates
 current_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=current_dir / "static"), name="static")
-app.mount("/uploads", StaticFiles(directory=current_dir / "uploads"), name="uploads")
 templates = Jinja2Templates(directory=current_dir / "templates")
 
-# Ensure the uploads directory exists on startup
+# Automatically create the 'uploads' directory to prevent crashes
 (current_dir / "uploads").mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=current_dir / "uploads"), name="uploads")
 
 # --- SECURITY & AUTHENTICATION ---
 # Load secrets securely from environment variables
