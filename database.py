@@ -3,11 +3,18 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+# --- NEW METHOD: Build the URL from its parts ---
+# Read the individual database credentials Railway provides
+db_user = os.getenv("PGUSER")
+db_password = os.getenv("PGPASSWORD")
+db_host = os.getenv("PGHOST")
+db_port = os.getenv("PGPORT")
+db_name = os.getenv("PGDATABASE")
 
-# This is the line that fixes the URL format
-if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
-    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# Construct a new, perfectly formatted URL for SQLAlchemy
+# We use an f-string and ensure the protocol is 'postgresql://'
+SQLALCHEMY_DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+# --- END OF NEW METHOD ---
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
